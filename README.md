@@ -62,7 +62,7 @@ Para que cualquiera pueda utilizar el seguidor y pueda conectar correctamente la
 
 3D Vista TOP             | 3D Vista BOTTOM 
 :-------------------------:|:-------------------------:
-![](hardware\LineFollowerCDR2018_MainBaord DIP\Imagenes\MainBoardTOP.png) |  ![](hardware\LineFollowerCDR2018_MainBaord DIP\Imagenes\MainBoardBOTTOM.png)
+![](hardware/LineFollowerCDR2018_MainBaord DIP/Imagenes/MainBoardTOP.png) |  ![](hardware/LineFollowerCDR2018_MainBaord DIP/Imagenes/MainBoardBOTTOM.png)
 
 
 Donde en la siguiente tabla se detalla la funcionalidad de cada conector:
@@ -85,9 +85,9 @@ Donde en la siguiente tabla se detalla la funcionalidad de cada conector:
 
 También se muestra la placa de sensores en su vista superior e inferior para eventuales dudas sobre cómo se colocan las resistencias o para saber a qué sensor corresponde cada pista del circuito. También se encuentra disponible el esquemático en el siguiente [Link](hardware\LineFollowerCDR2018_SensorsBoard - ReverseLogic/Esquematico.pdf).
 
-![Placa de sensores 3D TOP.](hardware\LineFollowerCDR2018_SensorsBoard - ReverseLogic\Imagenes\SensorBoardTOP.png)
+![Placa de sensores 3D TOP.](hardware/LineFollowerCDR2018_SensorsBoard - ReverseLogic/Imagenes/SensorBoardTOP.png)
 
-![Placa de sensores 3D BOTTOM.](hardware\LineFollowerCDR2018_SensorsBoard - ReverseLogic\Imagenes\SensorBoardBOTTOM.png)
+![Placa de sensores 3D BOTTOM.](hardware/LineFollowerCDR2018_SensorsBoard - ReverseLogic/Imagenes/SensorBoardBOTTOM.png)
 
 ### Sobre el Software:
 En principio se planea realizar un único sketch de Arduino con la totalidad del código. Como estrategia se planea usar un proporcional-derivador. De los 7 sensores se planea utilizar los 5 centrales como entradas analógicas, y los otros 2 de las puntas como entradas digitales (para cambios muy abruptos). Como se cuenta con más de un pulsador pueden establecerse rutinas de calibración...por ejemplo, una rutina que lea los valores de cada sensor y almacene los valores máximos y mínimos, con esos valores se pueden remapear las lecturas para aprovechar todo el rango dinámico. El otro pulsador puede utilizarse para la "largada".
