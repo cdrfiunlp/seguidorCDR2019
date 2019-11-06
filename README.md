@@ -58,7 +58,7 @@ A continuación se muestra el PINOUT del seguidor ante cualquier cuestión de co
 | **D2**    | Tx auxiliar del ATMEGA328 (soft). Rx de eventual BT. |
 
 ### Conectores y PINOUT de los conectores:
-Para que cualquiera pueda utilizar el seguidor y pueda conectar correctamente las interfaces se detalla cada conexionado con una foto explicativa. En caso de que se desee armar otra placa también se deja una foto de la capa inferior, donde hay algunos componentes SMD. Por cualquier cosa, el esquemático se encuentra en el siguiente [Link](hardware\LineFollowerCDR2018_MainBaord%20DIP/Esquematico.pdf).
+Para que cualquiera pueda utilizar el seguidor y pueda conectar correctamente las interfaces se detalla cada conexionado con una foto explicativa. En caso de que se desee armar otra placa también se deja una foto de la capa inferior, donde hay algunos componentes SMD. Por cualquier cosa, el esquemático se encuentra en el siguiente [Link](hardware/LineFollowerCDR2018_MainBaord%20DIP/Esquematico.pdf).
 
 3D Vista TOP             | 3D Vista BOTTOM 
 :-------------------------:|:-------------------------:
@@ -83,7 +83,7 @@ Donde en la siguiente tabla se detalla la funcionalidad de cada conector:
 | **SW2**                | Conector para interruptor de selección de modo.   	|
 | **SW3**                | Conector para pulsador de start.						|
 
-También se muestra la placa de sensores en su vista superior e inferior para eventuales dudas sobre cómo se colocan las resistencias o para saber a qué sensor corresponde cada pista del circuito. También se encuentra disponible el esquemático en el siguiente [Link](hardware\LineFollowerCDR2018_SensorsBoard%20-%20ReverseLogic/Esquematico.pdf).
+También se muestra la placa de sensores en su vista superior e inferior para eventuales dudas sobre cómo se colocan las resistencias o para saber a qué sensor corresponde cada pista del circuito. También se encuentra disponible el esquemático en el siguiente [Link](hardware/LineFollowerCDR2018_SensorsBoard%20-%20ReverseLogic/Esquematico.pdf).
 
 ![Placa de sensores 3D TOP.](hardware/LineFollowerCDR2018_SensorsBoard%20-%20ReverseLogic/Imagenes/SensorBoardTOP.png)
 
