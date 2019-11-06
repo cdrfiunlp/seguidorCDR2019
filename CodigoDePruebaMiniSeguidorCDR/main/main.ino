@@ -8,8 +8,8 @@
 #define M1A 8
 #define M2PWM 9
 #define M2A 7
-#define LED1 12
-#define LED2 11
+#define LED1 11
+#define LED2 12
 
 #define S1 A0
 #define S2 A2
@@ -20,7 +20,7 @@
 
 #define DT2 50000 // 200000
 
-#define BOTON 6
+#define BOTON 5
 
 // TIME 
 unsigned long dt = 0; 
@@ -49,32 +49,30 @@ void setup(){
   LEDsInit();
   MotoresInit(M1A, M2A);
   ApagarMotores(M1PWM, M1A, M2PWM, M2A);
-  //pinMode(BOTON,INPUT_PULLUP); // Boton para programa
+  pinMode(BOTON,INPUT_PULLUP); // Boton para programa
 
-  /*while(digitalRead(BOTON) == 1)
+  while(digitalRead(BOTON) == 1)
   { 
-	LEDsBlink(1, 1, 1, 100);
-  }*/
+	  LEDsBlink(1, 1, 1, 100);
+  }
 
   ApagarMotores(M1PWM, M1A, M2PWM, M2A);
   LEDsDrive(1,1);
   
-  /*while(digitalRead(BOTON) == 1){}*/
+  while(digitalRead(BOTON) == 1){}
   
   Serial.println("*** GO! ***");
   LEDsDrive(0,0);
-  delay(3000);
-  Flag = true;      // Para que inicie sin el boton
   
 }
 
 void loop(){
   
-  /*if(digitalRead(BOTON) == 0)
+  if(digitalRead(BOTON) == 0)
   {
    Flag = !Flag;
    delay(200); 
-  }*/
+  }
   
   if(Flag == true)
   {

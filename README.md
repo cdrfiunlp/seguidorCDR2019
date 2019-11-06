@@ -45,10 +45,10 @@ A continuación se muestra el PINOUT del seguidor ante cualquier cuestión de co
 
 | PIN MICRO |                     Detalle/Función                     |
 | --------- | :-----------------------------------------------------: |
-| **D6**    |                 **Pulsador de "start"**                 |
-| **D5**    | **Interruptor de selección de modo de funcionamiento.** |
-| **D12**   |            **MISO / LED1 verde/rojo (ver)**             |
-| **D12**   |            **MOSI / LED2 verde/rojo (ver)**             |
+| **D5**    |                 **Pulsador de "start"**                 |
+| **D6**    | **Interruptor de selección de modo de funcionamiento.** |
+| **D12**   |            **MISO / LED1 rojo **        			      |
+| **D11**   |            **MOSI / LED2 verde **            			  |
 
 | PIN MICRO |                   Detalle/Función                    |
 | --------- | :--------------------------------------------------: |
@@ -58,7 +58,7 @@ A continuación se muestra el PINOUT del seguidor ante cualquier cuestión de co
 | **D2**    | Tx auxiliar del ATMEGA328 (soft). Rx de eventual BT. |
 
 ### Conectores y PINOUT de los conectores:
-Para que cualquiera pueda utilizar el seguidor y pueda conectar correctamente las interfaces se detalla cada conexionado con una foto explicativa. En caso de que se desee armar otra placa también se deja una foto de la capa inferior, donde hay algunos componentes SMD. Por cualquier cosa, el esquemático se encuentra en el siguiente [Link](hardware\LineFollowerCDR2018_MainBaord DIP/Esquematico.pdf).
+Para que cualquiera pueda utilizar el seguidor y pueda conectar correctamente las interfaces se detalla cada conexionado con una foto explicativa. En caso de que se desee armar otra placa también se deja una foto de la capa inferior, donde hay algunos componentes SMD. Por cualquier cosa, el esquemático se encuentra en el siguiente [Link](hardware\LineFollowerCDR2018_MainBaord%20DIP/Esquematico.pdf).
 
 3D Vista TOP             | 3D Vista BOTTOM 
 :-------------------------:|:-------------------------:
@@ -77,13 +77,13 @@ Donde en la siguiente tabla se detalla la funcionalidad de cada conector:
 | **J1**                 | Conector para módulo BT HC-05.					    |
 | **J2**                 | Salida para el motor M1.								|
 | **J3**                 | Salida para el motor M2.								|
-| **D2**                 | LED rojo/verde (VER).								|
-| **D3**                 | LED rojo/verde (VER).								|
+| **D2**                 | LED rojo.											|
+| **D3**                 | LED verde.											|
 | **SW1**                | Pulsador del RESET del micro.						|
-| **SW2**                | Conector para pulsador de start.						|
 | **SW2**                | Conector para interruptor de selección de modo.   	|
+| **SW3**                | Conector para pulsador de start.						|
 
-También se muestra la placa de sensores en su vista superior e inferior para eventuales dudas sobre cómo se colocan las resistencias o para saber a qué sensor corresponde cada pista del circuito. También se encuentra disponible el esquemático en el siguiente [Link](hardware\LineFollowerCDR2018_SensorsBoard - ReverseLogic/Esquematico.pdf).
+También se muestra la placa de sensores en su vista superior e inferior para eventuales dudas sobre cómo se colocan las resistencias o para saber a qué sensor corresponde cada pista del circuito. También se encuentra disponible el esquemático en el siguiente [Link](hardware\LineFollowerCDR2018_SensorsBoard%20-%20ReverseLogic/Esquematico.pdf).
 
 ![Placa de sensores 3D TOP.](hardware/LineFollowerCDR2018_SensorsBoard%20-%20ReverseLogic/Imagenes/SensorBoardTOP.png)
 
