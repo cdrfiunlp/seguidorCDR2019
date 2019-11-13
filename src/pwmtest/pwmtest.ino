@@ -1,9 +1,14 @@
-#define KP 1
-#define KD 2.5	          // Probar con KD >> KP 
+/* ---- pwmtest ---- */
+/* La idea es probar el codigo para generar pwm a 25 kHz de 0 a 320
+ * Los motores arrancan apagados y a medida que se presiona el botón 
+ * amarillo se aumenta en 10 el pwm. Segun el osciloscopio esto implica
+ * un aumento del 3,1 % aproximadamente del ciclo de trabajo, lo que 
+ * concuerda con la cuenta 10/320*100 = 3.125.
+ */
+
 #define VEL_MAX 150
 #define VEL VEL_MAX/3*2   // con 200
-#define PWM_DEAD_ZONE 10   // los motores recien se mueven en 10
-#define DT 1000           // Cada 1 ms accion de control. (ESTO HAY QUE CAMBIARLO POR EL WHILE)
+#define PWM_DEAD_ZONE 0  // los motores recien se mueven en
 
 #define M1PWM 10
 #define M1A 8
@@ -12,33 +17,14 @@
 #define LED1 12 // color rojo
 #define LED2 11 // color verde
 
-#define S1 A0
-#define S2 A2
-#define S3 A3
-#define S4 A4
-#define S5 A5
-
-
-#define DT2 50000 // 200000
-
 #define BOT_START 5
 #define LLAVE 6
 
-// TIME
-unsigned long dt = 0;
-unsigned long Now = 0;
-unsigned long LastTime[1] = {0};
-unsigned long LastTime2[1] = {0};
-
-// CONTROLLER
-float LastError[1] = {0};
-float Error[1] = {0};
-float Constantes[4] = {KP, KD, DT, VEL};
-int Vel_filtrada[1] = {0};
 
 // STATES
 byte Flags[1] = {0};
 boolean Flag = false;
+int kk = 0;
 
 void setup() {
 
@@ -59,8 +45,7 @@ void setup() {
   //---- fin Configurar Timer 1 ---- //
 
   Serial.begin(9600);
-  Serial.println("/*** sigue_linea_PD ***/");
-  Serial.println("*** INITS ***");
+  Serial.println("/*** pwm test ***/");
   LEDsInit();
   MotoresInit(M1A, M2A);
   ApagarMotores(M1PWM, M1A, M2PWM, M2A);
@@ -75,38 +60,26 @@ void setup() {
   ApagarMotores(M1PWM, M1A, M2PWM, M2A);
   LEDsDrive(1, 1);
 
-  while(digitalRead(BOT_START) == 1){}
-
-  Serial.println("*** GO! ***");
-  LEDsDrive(0, 0);
-
 }
 
 void loop() {
 
-  if(digitalRead(BOT_START) == 0)
+  if (digitalRead(BOT_START) == 0)
+  {
+    if (kk == 320)
     {
-    Flag = !Flag;
+      kk = 0;
+    }
+    kk = kk + 10;
+    LEDsBlink(1, 1, 1, 200);
     delay(200);
-    }
-
-  if (Flag == true)
-  {
-    Now = micros();
-    dt = Now - *LastTime;
-
-    if (dt > Constantes[2])
-    {
-      Vel_filtrada[0] = LecturaSensores2(1, 0, Error, LastError, LastTime2, Flags);
-      SeguirLinea(M1PWM, M1A, M2PWM, M2A, Vel_filtrada[0], Constantes[3]);
-      *LastTime = Now;
-    }
-
-  }
-  else
-  {
     LEDsDrive(0, 0);
-    ApagarMotores(M1PWM, M1A, M2PWM, M2A);
   }
+
+  digitalWrite(M1A, 0);
+  digitalWrite(M2A, 0);
+  analogWrite25k(M2PWM, kk);
+  analogWrite25k(M1PWM, kk);
+  Serial.println(kk);
 
 }
