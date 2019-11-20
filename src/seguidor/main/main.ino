@@ -1,13 +1,13 @@
 #define KP 1
 #define KD 3
-#define SETPOINT_DRIFT 0.1
+#define SETPOINT_DRIFT 0.05
 #define PWM_DEAD_ZONE 50       // los motores recien se mueven en 50 de 320.
-#define PWM_MAX 320
+#define PWM_MAX 200
 #define MAX_OUTPUT_PID PWM_MAX // Esto sería la máxima acción de control (módulo)
-#define PD_SERIAL_DEBUG 1      // para enviar o no (en 0) el error, la salida del pid, etc.
-#define CNY_SERIAL_DEBUG 1     // para enviar o no (en 0) la lectura de los sensores y el error bruto
+#define PD_SERIAL_DEBUG 0      // para enviar o no (en 0) el error, la salida del pid, etc.
+#define CNY_SERIAL_DEBUG 0     // para enviar o no (en 0) la lectura de los sensores y el error bruto
 #define OSCILOSCOPE_DEBUG 0    // habilita para sacar una señal cuadrada por los pines de los LEDs.
-#define LOOP_TIME_MS 4000      // tiempo del lazo
+#define LOOP_TIME_MS 2000      // tiempo del lazo
 
 #define M1PWM 10
 #define M1A 8
@@ -96,6 +96,8 @@ void loop() {
 
   if (digitalRead(LLAVE) == 0) {
     CalibrarSensores(&SensorMin[0], &SensorMax[0]);                 // calibro los sensores si muevo la llave. Hay que volverla a la posicion para que funcione correctamente el auto.
+    LEDsBlink(0, 1, 1, 10);
+    LEDsBlink(1, 0, 1, 10);
     Serial.println("CALIBRANDO...");
   }
 
