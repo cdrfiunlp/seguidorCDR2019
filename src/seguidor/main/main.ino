@@ -1,15 +1,16 @@
-#define KP 1
-#define KD 3
-#define SETPOINT_DRIFT 0.00
-#define PWM_DEAD_ZONE 70           // los motores recien se mueven en 70 de 320.
-#define PWM_MAX 320
-#define PWM_MAX_M2 PWM_MAX         // maximo PWM para el motor 2. El motor 1 tendrá un PWM un poco menor (ver cuenta debajo)
+#define KP 2.1
+#define KD 14
+#define SETPOINT_DRIFT 0
+#define PWM_DEAD_ZONE 70               // los motores recien se mueven en 70 de 320.
+#define PWM_MAX_ABS 320                // límite máximo del PWM
+#define PWM_MAX 265                    // velocidad máxima para el auto
+#define PWM_MAX_M2 PWM_MAX             // maximo PWM para el motor 2. El motor 1 tendrá un PWM un poco menor (ver cuenta debajo)
 #define PWM_MAX_M1 (((PWM_MAX_M2 * 3.77) - 129) + 135.5) / 3.93
-#define MAX_OUTPUT_PID PWM_MAX_M1  // Esto sería la máxima acción de control (módulo)
-#define PD_SERIAL_DEBUG 1          // para enviar o no (en 0) el error, la salida del pid, etc.
-#define CNY_SERIAL_DEBUG 0         // para enviar o no (en 0) la lectura de los sensores y el error bruto
-#define OSCILOSCOPE_DEBUG 0        // habilita para sacar una señal cuadrada por los pines de los LEDs.
-#define LOOP_TIME_MS 2000          // tiempo del lazo
+#define MAX_OUTPUT_PID (PWM_MAX + 100) // Esto sería la máxima acción de control (módulo). Los 100 restantes por ahora es la "marcha atrás"
+#define PD_SERIAL_DEBUG 0              // para enviar o no (en 0) el error, la salida del pid, etc.
+#define CNY_SERIAL_DEBUG 0             // para enviar o no (en 0) la lectura de los sensores y el error bruto
+#define OSCILOSCOPE_DEBUG 0            // habilita para sacar una señal cuadrada por los pines de los LEDs.
+#define LOOP_TIME_MS 2000              // tiempo del lazo
 
 #define M1PWM 10
 #define M1A 8
@@ -148,15 +149,25 @@ void loop() {
     velM2 = output_pid;                         // el de M2 es directamente la salida del PID
 
     if (output_pid > 0) {
-      digitalWrite(M1A, 0);
-      analogWrite25k(M1PWM, PWM_MAX_M1 - (int)velM1);
       digitalWrite(M2A, 0);
       analogWrite25k(M2PWM, PWM_MAX_M2);
+      if (velM1 > PWM_MAX_M1) {
+        digitalWrite(M1A, 1);
+        analogWrite25k(M1PWM, PWM_MAX_ABS + PWM_MAX_M1 - velM1);
+      } else {
+        digitalWrite(M1A, 0);
+        analogWrite25k(M1PWM, PWM_MAX_M1 - velM1);
+      }
     } else {
       digitalWrite(M1A, 0);
       analogWrite25k(M1PWM, PWM_MAX_M1);
-      digitalWrite(M2A, 0);
-      analogWrite25k(M2PWM, PWM_MAX_M2 + (int)velM2);
+      if (velM2 < -PWM_MAX_M2) {
+        digitalWrite(M2A, 1);
+        analogWrite25k(M2PWM, PWM_MAX_ABS + PWM_MAX_M2 + velM2);
+      } else {
+        digitalWrite(M2A, 0);
+        analogWrite25k(M2PWM, PWM_MAX_M2 + velM2);
+      }
     }
 
 
@@ -165,16 +176,37 @@ void loop() {
       Serial.print("Error D:\t");
       Serial.print("Output PD:\t");
       Serial.print("VelM2 (PD output):\t");
-      Serial.println("VelM1:\t");
+      Serial.print("GiroM2:\t");
+      Serial.print("VelM1:\t");
+      Serial.println("GiroM1:\t");
       Serial.print(error);      Serial.print("\t");
       Serial.print(pid_diff);   Serial.print("\t\t");
       Serial.print(output_pid);   Serial.print("\t\t");
       if (output_pid > 0) {
-        Serial.print(PWM_MAX_M2); Serial.print("\t");
-        Serial.print(PWM_MAX_M1 - velM1); Serial.println("\t");
+
+        if (velM1 > PWM_MAX_M1) {
+          Serial.print(PWM_MAX_M2); Serial.print("\t\t\t");
+          Serial.print("1"); Serial.print("\t");
+          Serial.print(PWM_MAX_ABS + PWM_MAX_M1 - velM1); Serial.print("\t");
+          Serial.print("0"); Serial.println("\t");
+        } else {
+          Serial.print(PWM_MAX_M2); Serial.print("\t\t\t");
+          Serial.print("1"); Serial.print("\t");
+          Serial.print(PWM_MAX_M1 - velM1); Serial.print("\t");
+          Serial.print("1"); Serial.println("\t");
+        }
       } else {
-        Serial.print(PWM_MAX_M2 + velM2); Serial.print("\t");
-        Serial.print(PWM_MAX_M1); Serial.println("\t");
+        if (velM2 < -PWM_MAX_M2) {
+          Serial.print(PWM_MAX_ABS + PWM_MAX_M2 + velM2); Serial.print("\t\t\t");
+          Serial.print("0"); Serial.print("\t");
+          Serial.print(PWM_MAX_M1); Serial.print("\t");
+          Serial.print("1"); Serial.println("\t");
+        } else {
+          Serial.print(PWM_MAX_M2 + velM2); Serial.print("\t\t\t");
+          Serial.print("1"); Serial.print("\t");
+          Serial.print(PWM_MAX_M1); Serial.print("\t");
+          Serial.print("1"); Serial.println("\t");
+        }
       }
     }
 
