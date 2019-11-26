@@ -10,6 +10,7 @@
 #define VEL VEL_MAX/3*2   // con 200
 #define PWM_DEAD_ZONE 0  // los motores recien se mueven en
 
+#define OFFSET_MOTOR 0   
 #define M1PWM 10
 #define M1A 8
 #define M2PWM 9
@@ -20,6 +21,9 @@
 #define BOT_START 5
 #define LLAVE 6
 
+// VARIABLES
+float velM1 = 0;
+float velM2 = 0;
 
 // STATES
 byte Flags[1] = {0};
@@ -64,22 +68,26 @@ void setup() {
 
 void loop() {
 
-  if (digitalRead(BOT_START) == 0)
+  if ((digitalRead(BOT_START) == 0) || (Serial.available()>0))
   {
-    if (kk == 320)
+    char a = Serial.read();
+    if (((kk + OFFSET_MOTOR) == 320) || (a == '0'))
     {
       kk = 0;
     }
     kk = kk + 10;
     LEDsBlink(1, 1, 1, 200);
+    float velM2_RPM = (kk*3.77)-129;
+    velM1 = (velM2_RPM + 135.5)/3.93; 
     delay(200);
     LEDsDrive(0, 0);
   }
 
   digitalWrite(M1A, 0);
   digitalWrite(M2A, 0);
+  analogWrite25k(M1PWM, int(velM1));
   analogWrite25k(M2PWM, kk);
-  analogWrite25k(M1PWM, kk);
-  Serial.println(kk);
+  Serial.print("M2Vel:\t"); Serial.print(kk);
+  Serial.print("M1Vel:\t"); Serial.println(int(velM1));
 
 }

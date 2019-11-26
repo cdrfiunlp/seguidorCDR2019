@@ -1,13 +1,15 @@
 #define KP 1
 #define KD 3
-#define SETPOINT_DRIFT 0.05
-#define PWM_DEAD_ZONE 50       // los motores recien se mueven en 50 de 320.
-#define PWM_MAX 200
-#define MAX_OUTPUT_PID PWM_MAX // Esto sería la máxima acción de control (módulo)
-#define PD_SERIAL_DEBUG 0      // para enviar o no (en 0) el error, la salida del pid, etc.
-#define CNY_SERIAL_DEBUG 0     // para enviar o no (en 0) la lectura de los sensores y el error bruto
-#define OSCILOSCOPE_DEBUG 0    // habilita para sacar una señal cuadrada por los pines de los LEDs.
-#define LOOP_TIME_MS 2000      // tiempo del lazo
+#define SETPOINT_DRIFT 0.00
+#define PWM_DEAD_ZONE 70           // los motores recien se mueven en 70 de 320.
+#define PWM_MAX 320
+#define PWM_MAX_M2 PWM_MAX         // maximo PWM para el motor 2. El motor 1 tendrá un PWM un poco menor (ver cuenta debajo)
+#define PWM_MAX_M1 (((PWM_MAX_M2 * 3.77) - 129) + 135.5) / 3.93
+#define MAX_OUTPUT_PID PWM_MAX_M1  // Esto sería la máxima acción de control (módulo)
+#define PD_SERIAL_DEBUG 1          // para enviar o no (en 0) el error, la salida del pid, etc.
+#define CNY_SERIAL_DEBUG 0         // para enviar o no (en 0) la lectura de los sensores y el error bruto
+#define OSCILOSCOPE_DEBUG 0        // habilita para sacar una señal cuadrada por los pines de los LEDs.
+#define LOOP_TIME_MS 2000          // tiempo del lazo
 
 #define M1PWM 10
 #define M1A 8
@@ -37,6 +39,7 @@ int SensorMax[5] = {512, 512, 512, 512, 512}; // la mitad del rango 0-1023 del a
 float setpoint_centrado = 0;
 float error, output_pid, pid_last_d_error, pid_diff;
 float pid_output_M1, pid_output_M2;
+float velM2_RPM = 0; float velM1 = 0; float velM2 = 0;
 
 // STATES
 boolean flag = false;
@@ -134,31 +137,45 @@ void loop() {
       if (!OSCILOSCOPE_DEBUG)LEDsDrive(1, 1);                          // apago los dos LED porque no hay acción de control si no estoy en el modo osciloscopio
     }
 
-    if (PD_SERIAL_DEBUG) {                                             // envío los datos para debugging
-      Serial.print("Error:\t");
-      Serial.print("Error D:\t");
-      Serial.println("Salida PID:\t");
-      Serial.print(error);      Serial.print("\t");
-      Serial.print(pid_diff);   Serial.print("\t\t");
-      Serial.print(output_pid); Serial.println("\t");
-    }
-
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Velocidad de motores
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // La idea es probar descontarle a cada motor lo suficiente como para que gire.... si esto no funciona, volveremos a "VM +- correccion"
     // pero en ese caso no se puede subir más la velocidad de ambos más que VM.
 
-    if (output_pid < 0) {
+    velM2_RPM = (output_pid * 3.77) - 129;      // correccion de velocidad de los motores. Ver script medicionVelocidadMotores.m
+    velM1 = (velM2_RPM + 135.5) / 3.93;         // el PWM del M1 será algo menor que el de M2
+    velM2 = output_pid;                         // el de M2 es directamente la salida del PID
+
+    if (output_pid > 0) {
       digitalWrite(M1A, 0);
-      analogWrite25k(M1PWM, PWM_MAX - output_pid);
+      analogWrite25k(M1PWM, PWM_MAX_M1 - (int)velM1);
       digitalWrite(M2A, 0);
-      analogWrite25k(M2PWM, PWM_MAX);
+      analogWrite25k(M2PWM, PWM_MAX_M2);
     } else {
       digitalWrite(M1A, 0);
-      analogWrite25k(M1PWM, PWM_MAX);
+      analogWrite25k(M1PWM, PWM_MAX_M1);
       digitalWrite(M2A, 0);
-      analogWrite25k(M2PWM, PWM_MAX + output_pid);
+      analogWrite25k(M2PWM, PWM_MAX_M2 + (int)velM2);
+    }
+
+
+    if (PD_SERIAL_DEBUG) {                                             // envío los datos para debugging
+      Serial.print("Error:\t");
+      Serial.print("Error D:\t");
+      Serial.print("Output PD:\t");
+      Serial.print("VelM2 (PD output):\t");
+      Serial.println("VelM1:\t");
+      Serial.print(error);      Serial.print("\t");
+      Serial.print(pid_diff);   Serial.print("\t\t");
+      Serial.print(output_pid);   Serial.print("\t\t");
+      if (output_pid > 0) {
+        Serial.print(PWM_MAX_M2); Serial.print("\t");
+        Serial.print(PWM_MAX_M1 - velM1); Serial.println("\t");
+      } else {
+        Serial.print(PWM_MAX_M2 + velM2); Serial.print("\t");
+        Serial.print(PWM_MAX_M1); Serial.println("\t");
+      }
     }
 
 
